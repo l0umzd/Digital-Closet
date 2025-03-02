@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Digital Closet</title>
+    <style>
+        body {
+            background-color: #ffdde1;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            width: 300px;
+        }
+        h1 {
+            color: #ff6b81;
+        }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ff6b81;
+            border-radius: 5px;
+            display: block;
+        }
+        .btn {
+            background-color: #ff6b81;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+        }
+        .btn:hover {
+            background-color: #ff4f68;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .toggle-password {
+            cursor: pointer;
+            color: #555;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Register</h1>
+        <input type="text" id="username" placeholder="Username">
+        <div class="error" id="usernameError"></div>
+        
+        <input type="password" id="password" placeholder="Password">
+        <span class="toggle-password" onclick="togglePassword()">👁 Show Password</span>
+        <div class="error" id="passwordError"></div>
+
+        <button class="btn" onclick="register()">Register</button>
+        <p>Already have an account? <a href="login.html">Login here</a></p>
+        <div class="error" id="registerError"></div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordField = document.getElementById("password");
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+            } else {
+                passwordField.type = "password";
+            }
+        }
+
+        async function register() {
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const usernameError = document.getElementById("usernameError");
+            const passwordError = document.getElementById("passwordError");
+            const registerError = document.getElementById("registerError");
+
+            // 清除旧错误信息
+            usernameError.innerText = "";
+            passwordError.innerText = "";
+            registerError.innerText = "";
+
+            if (!username) {
+                usernameError.innerText = "Username cannot be empty.";
+                return;
+            }
+            if (!password) {
+                passwordError.innerText = "Password cannot be empty.";
+                return;
+            }
+
+            const res = await fetch("http://localhost:5000/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                alert("Registration successful! Redirecting to login.");
+                window.location.href = "login.html";
+            } else {
+                registerError.innerText = data.error || "Registration failed.";
+            }
+        }
+    </script>
+</body>
+</html>
