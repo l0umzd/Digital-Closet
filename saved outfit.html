@@ -31,6 +31,9 @@
             padding: 10px;
             border-radius: 10px;
             margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
         .outfit img {
             width: 100px;
@@ -58,6 +61,18 @@
             margin-top: 5px;
             border: 1px solid #ff6b81;
             border-radius: 5px;
+        }
+        .delete-btn {
+            background-color: #ff4f68;
+            padding: 5px 10px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .delete-btn:hover {
+            background-color: #ff6b81;
         }
     </style>
 </head>
@@ -97,7 +112,14 @@
                     img.src = imgSrc;
                     outfitDiv.appendChild(img);
                 });
-                
+
+                // Create Delete Button
+                let deleteBtn = document.createElement("button");
+                deleteBtn.className = "delete-btn";
+                deleteBtn.innerText = "Delete";
+                deleteBtn.addEventListener("click", () => deleteOutfit(index));
+                outfitDiv.appendChild(deleteBtn);
+
                 outfitsDiv.appendChild(outfitDiv);
             });
         }
@@ -108,6 +130,13 @@
             localStorage.setItem("savedOutfits", JSON.stringify(savedOutfits));
         }
         
+        function deleteOutfit(index) {
+            let savedOutfits = JSON.parse(localStorage.getItem("savedOutfits")) || [];
+            savedOutfits.splice(index, 1); // Remove the outfit at the given index
+            localStorage.setItem("savedOutfits", JSON.stringify(savedOutfits));
+            loadSavedOutfits(); // Reload the saved outfits after deletion
+        }
+
         window.onload = loadSavedOutfits;
     </script>
 </body>
