@@ -26,11 +26,33 @@
         h1 {
             color: #ff6b81;
         }
+        .section {
+            margin: 15px 0;
+        }
+        .btn {
+            background-color: #ff6b81;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background-color: #ff4f68;
+        }
+        .closet-container {
+            margin-top: 20px;
+            padding: 10px;
+            background: #ffe4e1;
+            border-radius: 10px;
+        }
         .item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: #ffe4e1;
+            background: #fff;
             padding: 10px;
             border-radius: 5px;
             margin: 10px 0;
@@ -41,100 +63,76 @@
             border-radius: 5px;
             object-fit: cover;
         }
-        .tags {
-            flex-grow: 1;
-            margin-left: 10px;
-            text-align: left;
-        }
-        .delete-btn {
-            background-color: #ff4f68;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        .delete-btn:hover {
-            background-color: #d43f57;
-        }
-        .clear-btn {
-            background-color: #ff6b81;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            margin-top: 10px;
-        }
-        .clear-btn:hover {
-            background-color: #ff4f68;
+        .filter {
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>My Closet</h1>
-        <div id="closet"></div>
-        
-        <!-- Add Another Button -->
-        <button class="clear-btn" onclick="window.location.href='addPiece.html'">Add Another</button>
-        
-        <button class="clear-btn" onclick="clearCloset()">Clear Closet</button>
-        <button class="clear-btn" onclick="window.location.href='index.html'">Back to Home</button>
+        <div class="filter">
+            <label for="filterType">Filter by:</label>
+            <select id="filterType" onchange="loadCloset()">
+                <option value="all">All</option>
+                <option value="type">Clothing Type</option>
+                <option value="style">Style</option>
+                <option value="weather">Weather</option>
+            </select>
+        </div>
+        <div class="closet-container" id="closet"></div>
+        <button class="btn" onclick="window.location.href='index.html'">Back to Home</button>
     </div>
 
     <script>
         function loadCloset() {
             let closet = JSON.parse(localStorage.getItem("closet")) || [];
             let closetDiv = document.getElementById("closet");
+            let filterType = document.getElementById("filterType").value;
             closetDiv.innerHTML = "";
-            
+
             if (closet.length === 0) {
                 closetDiv.innerHTML = "<p>Your closet is empty!</p>";
                 return;
             }
             
-            closet.forEach((item, index) => {
-                let itemDiv = document.createElement("div");
-                itemDiv.className = "item";
-                
-                let img = document.createElement("img");
-                img.src = item.image;
-                
-                let tagsDiv = document.createElement("div");
-                tagsDiv.className = "tags";
-                tagsDiv.innerHTML = `<strong>${item.type.join(", ")}</strong><br>
-                                     <strong>Weather:</strong> ${item.weather.join(", ")}<br>
-                                     <strong>Style:</strong> ${item.style.join(", ")}<br>
-                                     <strong>Custom Tags:</strong> ${item.tags.join(", ")}`;
-                
-                let deleteBtn = document.createElement("button");
-                deleteBtn.className = "delete-btn";
-                deleteBtn.innerText = "Delete";
-                deleteBtn.onclick = function() {
-                    removeItem(index);
-                };
-                
-                itemDiv.appendChild(img);
-                itemDiv.appendChild(tagsDiv);
-                itemDiv.appendChild(deleteBtn);
-                closetDiv.appendChild(itemDiv);
+            let groupedItems = {};
+            closet.forEach(item => {
+                let key = "All";
+                if (filterType === "type") {
+                    key = item.type.join(", ");
+                } else if (filterType === "style") {
+                    key = item.style.join(", ");
+                } else if (filterType === "weather") {
+                    key = item.weather.join(", ");
+                }
+                if (!groupedItems[key]) {
+                    groupedItems[key] = [];
+                }
+                groupedItems[key].push(item);
             });
-        }
-        
-        function removeItem(index) {
-            let closet = JSON.parse(localStorage.getItem("closet")) || [];
-            closet.splice(index, 1);
-            localStorage.setItem("closet", JSON.stringify(closet));
-            loadCloset();
-        }
 
-        function clearCloset() {
-            localStorage.removeItem("closet");
-            loadCloset();
+            for (let category in groupedItems) {
+                let categoryDiv = document.createElement("div");
+                categoryDiv.innerHTML = `<h3>${category}</h3>`;
+                groupedItems[category].forEach(item => {
+                    let itemDiv = document.createElement("div");
+                    itemDiv.className = "item";
+                    let img = document.createElement("img");
+                    img.src = item.image;
+                    let tagsDiv = document.createElement("div");
+                    tagsDiv.innerHTML = `<strong>${item.type.join(", ")}</strong><br>
+                                         <strong>Style:</strong> ${item.style.join(", ")}<br>
+                                         <strong>Weather:</strong> ${item.weather.join(", ")}`;
+                    itemDiv.appendChild(img);
+                    itemDiv.appendChild(tagsDiv);
+                    categoryDiv.appendChild(itemDiv);
+                });
+                closetDiv.appendChild(categoryDiv);
+            }
         }
-
         window.onload = loadCloset;
     </script>
 </body>
 </html>
+
