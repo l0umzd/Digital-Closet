@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Closet</title>
+    <style>
+        body {
+            background-color: pink;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            max-width: 600px;
+        }
+        h1 {
+            color: #ff6b81;
+        }
+        .item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffe4e1;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .item img {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            object-fit: cover;
+        }
+        .tags {
+            flex-grow: 1;
+            margin-left: 10px;
+            text-align: left;
+        }
+        .delete-btn {
+            background-color: #ff4f68;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .delete-btn:hover {
+            background-color: #d43f57;
+        }
+        .clear-btn {
+            background-color: #ff6b81;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .clear-btn:hover {
+            background-color: #ff4f68;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>My Closet</h1>
+        <div id="closet"></div>
+        <button class="clear-btn" onclick="clearCloset()">Clear Closet</button>
+        <button class="clear-btn" onclick="window.location.href='index.html'">Back to Home</button>
+    </div>
+
+    <script>
+        function loadCloset() {
+            let closet = JSON.parse(localStorage.getItem("closet")) || [];
+            let closetDiv = document.getElementById("closet");
+            closetDiv.innerHTML = "";
+            
+            if (closet.length === 0) {
+                closetDiv.innerHTML = "<p>Your closet is empty!</p>";
+                return;
+            }
+            
+            closet.forEach((item, index) => {
+                let itemDiv = document.createElement("div");
+                itemDiv.className = "item";
+                
+                let img = document.createElement("img");
+                img.src = item.image;
+                
+                let tagsDiv = document.createElement("div");
+                tagsDiv.className = "tags";
+                tagsDiv.innerHTML = `<strong>${item.type.join(", ")}</strong><br>
+                                     <strong>Weather:</strong> ${item.weather.join(", ")}<br>
+                                     <strong>Style:</strong> ${item.style.join(", ")}<br>
+                                     <strong>Custom Tags:</strong> ${item.tags.join(", ")}`;
+                
+                let deleteBtn = document.createElement("button");
+                deleteBtn.className = "delete-btn";
+                deleteBtn.innerText = "Delete";
+                deleteBtn.onclick = function() {
+                    removeItem(index);
+                };
+                
+                itemDiv.appendChild(img);
+                itemDiv.appendChild(tagsDiv);
+                itemDiv.appendChild(deleteBtn);
+                closetDiv.appendChild(itemDiv);
+            });
+        }
+        
+        function removeItem(index) {
+            let closet = JSON.parse(localStorage.getItem("closet")) || [];
+            closet.splice(index, 1);
+            localStorage.setItem("closet", JSON.stringify(closet));
+            loadCloset();
+        }
+
+        function clearCloset() {
+            localStorage.removeItem("closet");
+            loadCloset();
+        }
+
+        window.onload = loadCloset;
+    </script>
+</body>
+</html>
+]

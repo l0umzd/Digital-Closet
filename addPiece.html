@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Item to Closet</title>
+    <style>
+        body {
+            background-color: pink;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .container {
+            width: 450px;
+            padding: 30px;
+            background-color: #ffe6e6;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .section {
+            margin-bottom: 15px;
+        }
+        button, input[type="text"] {
+            margin-top: 5px;
+            padding: 5px;
+        }
+        img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin-top: 10px;
+            display: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Add Item to Closet</h2>
+
+        <div class="section">
+            <h3>Upload Image:</h3>
+            <input type="file" id="fileInput" accept="image/*" onchange="previewImage(event)">
+            <br>
+            <img id="preview" alt="Image Preview">
+        </div>
+
+        <div class="section">
+            <h3>Clothing Type:</h3>
+            <div id="clothing-types">
+                <label><input type="checkbox" value="Top"> Top</label><br>
+                <label><input type="checkbox" value="Pants"> Pants</label><br>
+                <label><input type="checkbox" value="Shorts"> Shorts</label><br>
+                <label><input type="checkbox" value="Skirt"> Skirt</label><br>
+                <label><input type="checkbox" value="Dress"> Dress</label><br>
+                <label><input type="checkbox" value="Shoes"> Shoes</label><br>
+            </div>
+            <input type="text" id="newClothingType" placeholder="Add new clothing type">
+            <button onclick="addOption('clothing-types', 'newClothingType')">Add</button>
+        </div>
+
+        <div class="section">
+            <h3>Weather:</h3>
+            <div id="weather-options">
+                <label><input type="checkbox" value="Cold"> Cold</label><br>
+                <label><input type="checkbox" value="Very Cold"> Very Cold</label><br>
+                <label><input type="checkbox" value="Warm"> Warm</label><br>
+                <label><input type="checkbox" value="Hot"> Hot</label><br>
+            </div>
+            <input type="text" id="newWeatherOption" placeholder="Add new weather option">
+            <button onclick="addOption('weather-options', 'newWeatherOption')">Add</button>
+        </div>
+
+        <div class="section">
+            <h3>Style:</h3>
+            <div id="style-options">
+                <label><input type="checkbox" value="Casual"> Casual</label><br>
+                <label><input type="checkbox" value="Fancy"> Fancy</label><br>
+                <label><input type="checkbox" value="Outdoorsy"> Outdoorsy</label><br>
+            </div>
+            <input type="text" id="newStyle" placeholder="Add new style">
+            <button onclick="addOption('style-options', 'newStyle')">Add</button>
+        </div>
+
+        <div class="section">
+            <h3>Custom Tags:</h3>
+            <input type="text" id="customTags" placeholder="Add custom tags">
+        </div>
+
+        <button onclick="addToCloset()">Add to Closet</button>
+        <button onclick="window.location.href='index.html'">Back to Home</button>
+    </div>
+
+    <script>
+        function previewImage(event) {
+            let reader = new FileReader();
+            reader.onload = function() {
+                let preview = document.getElementById("preview");
+                preview.src = reader.result;
+                preview.style.display = "block";
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        function addOption(sectionId, inputId) {
+            let input = document.getElementById(inputId);
+            let value = input.value.trim();
+            if (value) {
+                let section = document.getElementById(sectionId);
+                let label = document.createElement("label");
+                label.innerHTML = `<input type="checkbox" value="${value}"> ${value}`;
+                section.appendChild(label);
+                section.appendChild(document.createElement("br"));
+                input.value = "";
+            }
+        }
+
+        function addToCloset() {
+            let image = document.getElementById("preview").src;
+            if (!image || image === window.location.href) {
+                alert("Please upload an image.");
+                return;
+            }
+
+            let clothingType = getCheckedValues("clothing-types");
+            if (clothingType.length === 0) {
+                alert("Please select at least one clothing type.");
+                return;
+            }
+
+            let weather = getCheckedValues("weather-options");
+            let style = getCheckedValues("style-options");
+            let customTags = document.getElementById("customTags").value.trim().split(",").map(tag => tag.trim()).filter(tag => tag !== "");
+
+            let closet = JSON.parse(localStorage.getItem("closet")) || [];
+            closet.push({
+                image: image,
+                type: clothingType,
+                weather: weather,
+                style: style,
+                tags: customTags
+            });
+
+            localStorage.setItem("closet", JSON.stringify(closet));
+            alert("Item added to closet!");
+            window.location.href = "closet.html";
+        }
+
+        function getCheckedValues(sectionId) {
+            return Array.from(document.querySelectorAll(`#${sectionId} input[type="checkbox"]:checked`))
+                .map(input => input.value);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Closet</title>
+    <style>
+        body {
+            background-color: pink;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            color: #ff6b81;
+        }
+        .btn {
+            background-color: #ff6b81;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background-color: #ff4f68;
+        }
+        .highlight-btn {
+            background-color: #ff80ab;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 15px 30px;
+            margin-top: 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            display: block;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .highlight-btn:hover {
+            background-color: #ff6699;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Your Digital Closet</h1>
+        <button class="btn" onclick="goToCloset()">Go to Closet</button>
+        <button class="btn" onclick="goToAddPiece()">Add Piece</button>
+        <button class="highlight-btn" onclick="goToGetOutfit()">Get Your Outfit Today</button>
+    </div>
+
+    <script>
+        function goToCloset() {
+            window.location.href = 'closet.html';
+        }
+        
+        function goToAddPiece() {
+            window.location.href = 'addPiece.html';
+        }
+        
+        function goToGetOutfit() {
+            window.location.href = 'getOutfit.html';
+        }
+    </script>
+</body>
+</html>
