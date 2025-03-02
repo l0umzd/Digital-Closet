@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Your Outfit</title>
+    <style>
+        body {
+            background-color: pink;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            max-width: 600px;
+        }
+        h1 {
+            color: #ff6b81;
+        }
+        .section {
+            margin: 15px 0;
+        }
+        .btn {
+            background-color: #ff6b81;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background-color: #ff4f68;
+        }
+        .outfit-container {
+            margin-top: 20px;
+            padding: 10px;
+            background: #ffe4e1;
+            border-radius: 10px;
+            display: none;
+        }
+        .outfit-container img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Get Your Outfit</h1>
+        <div class="section">
+            <h3>Select Weather:</h3>
+            <select id="weather">
+                <option value="">Any</option>
+                <option value="Cold">Cold</option>
+                <option value="Very Cold">Very Cold</option>
+                <option value="Warm">Warm</option>
+                <option value="Hot">Hot</option>
+            </select>
+            <label><input type="radio" name="priority" id="weatherPriority"> Prioritize Weather</label>
+        </div>
+
+        <div class="section">
+            <h3>Select Style:</h3>
+            <select id="style">
+                <option value="">Any</option>
+                <option value="Casual">Casual</option>
+                <option value="Fancy">Fancy</option>
+                <option value="Outdoorsy">Outdoorsy</option>
+            </select>
+            <label><input type="radio" name="priority" id="stylePriority"> Prioritize Style</label>
+        </div>
+
+        <div class="section">
+            <h3>Enter Custom Tags:</h3>
+            <input type="text" id="customTags" placeholder="e.g., Red, Vintage">
+        </div>
+
+        <button class="btn" onclick="generateOutfit()">Generate Outfit</button>
+        <div class="outfit-container" id="outfitContainer">
+            <h3>Your Outfit:</h3>
+            <div id="outfit"></div>
+        </div>
+        <button class="btn" onclick="window.location.href='index.html'">Back to Home</button>
+    </div>
+
+    <script>
+        function generateOutfit() {
+            let weather = document.getElementById("weather").value;
+            let style = document.getElementById("style").value;
+            let customTags = document.getElementById("customTags").value.trim().toLowerCase().split(",").map(tag => tag.trim()).filter(tag => tag !== "");
+            let prioritizeWeather = document.getElementById("weatherPriority").checked;
+            let prioritizeStyle = document.getElementById("stylePriority").checked;
+            
+            if (!weather && !style && customTags.length === 0) {
+                alert("Please select at least one filter (Weather, Style, or Custom Tags).");
+                return;
+            }
+            
+            let closet = JSON.parse(localStorage.getItem("closet")) || [];
+            let tops = closet.filter(item => item.type.includes("Top") && (!style || item.style.includes(style)));
+            let bottoms = closet.filter(item => ["Shorts", "Pants", "Skirt"].some(type => item.type.includes(type)));
+            let dresses = closet.filter(item => item.type.includes("Dress"));
+            
+            let outfitContainer = document.getElementById("outfitContainer");
+            let outfitDiv = document.getElementById("outfit");
+            outfitDiv.innerHTML = "";
+            
+            if (dresses.length > 0 && (Math.random() > 0.5 || (tops.length === 0 || bottoms.length === 0))) {
+                let selectedDress = dresses[Math.floor(Math.random() * dresses.length)];
+                let dressImg = document.createElement("img");
+                dressImg.src = selectedDress.image;
+                outfitDiv.appendChild(dressImg);
+            } else if (tops.length > 0 && bottoms.length > 0) {
+                let selectedTop = tops[Math.floor(Math.random() * tops.length)];
+                let selectedBottom = bottoms[Math.floor(Math.random() * bottoms.length)];
+                
+                let topImg = document.createElement("img");
+                topImg.src = selectedTop.image;
+                outfitDiv.appendChild(topImg);
+                
+                let bottomImg = document.createElement("img");
+                bottomImg.src = selectedBottom.image;
+                outfitDiv.appendChild(bottomImg);
+            } else {
+                outfitDiv.innerHTML = "<p>No matching outfit found.</p>";
+            }
+            outfitContainer.style.display = "block";
+        }
+    </script>
+</body>
+</html>
