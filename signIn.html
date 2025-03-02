@@ -12,7 +12,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #f0f0f0;
+            background-color: pink;
         }
         .container {
             background-color: white;
@@ -59,14 +59,96 @@
         }
         a {
             color: #ff6b81;
-            text-decoration: none;
+            text-decoration: underline;
+            cursor: pointer;
         }
         a:hover {
-            text-decoration: underline;
+            text-decoration: none;
+        }
+        #auth-message {
+            color: red;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h2 id="form-title">Login</h
+        <h2 id="form-title">Login</h2>
+        <div id="form-container">
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="input-group" id="password-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required>
+            </div>
+            <button class="btn" id="login-btn" onclick="handleLogin()">Login</button>
+            <p id="auth-message"></p>
+        </div>
+        <p>Don't have an account? <a onclick="toggleToSignUp()">Sign Up</a></p>
+    </div>
+
+    <script>
+        // Toggle to sign-up mode
+        function toggleToSignUp() {
+            const title = document.getElementById('form-title');
+            const loginBtn = document.getElementById('login-btn');
+            const signUpLink = document.querySelector('a');
+            
+            title.innerText = 'Sign Up';
+            loginBtn.innerText = 'Sign Up';
+            loginBtn.onclick = handleSignUp;
+            signUpLink.style.display = 'none'; // Hide the sign-up link once in sign-up mode
+        }
+
+        // Handle login functionality
+        function handleLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const message = document.getElementById('auth-message');
+
+            if (!username || !password) {
+                message.innerText = 'Please fill in all fields';
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('users')) || {};
+
+            if (users[username] && users[username].password === password) {
+                localStorage.setItem('currentUser', username);
+                message.innerText = 'Login successful!';
+                window.location.href = 'home.html'; // Redirect to home page
+            } else {
+                message.innerText = 'Invalid credentials!';
+            }
+        }
+
+        // Handle sign-up functionality
+        function handleSignUp() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const message = document.getElementById('auth-message');
+
+            if (!username || !password) {
+                message.innerText = 'Please fill in all fields';
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('users')) || {};
+
+            if (users[username]) {
+                message.innerText = 'Username already exists!';
+            } else {
+                users[username] = { password: password, closet: [] }; // Store user data
+                localStorage.setItem('users', JSON.stringify(users));
+                localStorage.setItem('currentUser', username);
+                message.innerText = 'Account created successfully!';
+                window.location.href = 'home.html'; // Redirect to home page
+            }
+        }
+    </script>
+
+</body>
+</html>
+
