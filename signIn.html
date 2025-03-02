@@ -118,7 +118,7 @@
             if (users[username] && users[username].password === password) {
                 localStorage.setItem('currentUser', username);
                 message.innerText = 'Login successful!';
-                window.location.href = 'home.html'; // Redirect to home page
+                window.location.href = 'index.html'; // Redirect to home page
             } else {
                 message.innerText = 'Invalid credentials!';
             }
