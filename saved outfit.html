@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Outfits</title>
+    <style>
+        body {
+            background-color: pink;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            max-width: 600px;
+        }
+        h1 {
+            color: #ff6b81;
+        }
+        .outfit {
+            background: #ffe4e1;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        .outfit img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        .btn {
+            background-color: #ff6b81;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background-color: #ff4f68;
+        }
+        .rename-input {
+            width: 80%;
+            padding: 5px;
+            margin-top: 5px;
+            border: 1px solid #ff6b81;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Saved Outfits</h1>
+        <div id="savedOutfits"></div>
+        <button class="btn" onclick="window.location.href='index.html'">Back to Home</button>
+        <button class="btn" onclick="window.location.href='getOutfit.html'">Get Outfit Today</button>
+    </div>
+
+    <script>
+        function loadSavedOutfits() {
+            let savedOutfits = JSON.parse(localStorage.getItem("savedOutfits")) || [];
+            let outfitsDiv = document.getElementById("savedOutfits");
+            outfitsDiv.innerHTML = "";
+            
+            if (savedOutfits.length === 0) {
+                outfitsDiv.innerHTML = "<p>No saved outfits yet!</p>";
+                return;
+            }
+            
+            savedOutfits.forEach((outfit, index) => {
+                let outfitDiv = document.createElement("div");
+                outfitDiv.className = "outfit";
+                
+                let nameInput = document.createElement("input");
+                nameInput.type = "text";
+                nameInput.className = "rename-input";
+                nameInput.value = outfit.name;
+                nameInput.addEventListener("change", () => renameOutfit(index, nameInput.value));
+                
+                outfitDiv.appendChild(nameInput);
+                
+                outfit.items.forEach(imgSrc => {
+                    let img = document.createElement("img");
+                    img.src = imgSrc;
+                    outfitDiv.appendChild(img);
+                });
+                
+                outfitsDiv.appendChild(outfitDiv);
+            });
+        }
+
+        function renameOutfit(index, newName) {
+            let savedOutfits = JSON.parse(localStorage.getItem("savedOutfits")) || [];
+            savedOutfits[index].name = newName;
+            localStorage.setItem("savedOutfits", JSON.stringify(savedOutfits));
+        }
+        
+        window.onload = loadSavedOutfits;
+    </script>
+</body>
+</html>
