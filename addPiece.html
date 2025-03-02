@@ -7,35 +7,64 @@
     <style>
         body {
             background-color: pink;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            font-family: Arial, sans-serif;
-            text-align: center;
         }
         .container {
-            width: 450px;
-            padding: 30px;
-            background-color: #ffe6e6;
+            background: white;
+            padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            text-align: center;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            max-width: 600px;
+        }
+        h1 {
+            color: #ff6b81;
         }
         .section {
-            margin-bottom: 15px;
+            margin: 15px 0;
         }
-        button, input[type="text"] {
-            margin-top: 5px;
-            padding: 5px;
+        .btn {
+            background-color: #ff6b81;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
         }
-        img {
+        .btn:hover {
+            background-color: #ff4f68;
+        }
+        .outfit-container {
+            margin-top: 20px;
+            padding: 10px;
+            background: #ffe4e1;
+            border-radius: 10px;
+            display: none;
+        }
+        .outfit-container img {
             width: 100px;
             height: 100px;
             object-fit: cover;
             margin-top: 10px;
             display: none;
             border-radius: 5px;
+        }
+        img#preview {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+            display: none;
+            margin: auto;
+            position: relative;
         }
     </style>
 </head>
@@ -136,7 +165,7 @@
             let weather = getCheckedValues("weather-options");
             let style = getCheckedValues("style-options");
             let customTags = document.getElementById("customTags").value.trim().split(",").map(tag => tag.trim()).filter(tag => tag !== "");
-
+            
             let closet = JSON.parse(localStorage.getItem("closet")) || [];
             closet.push({
                 image: image,
@@ -149,8 +178,8 @@
             localStorage.setItem("closet", JSON.stringify(closet));
             alert("Item added to closet!");
             window.location.href = "closet.html";
-        }
-
+            }
+            
         function getCheckedValues(sectionId) {
             return Array.from(document.querySelectorAll(`#${sectionId} input[type="checkbox"]:checked`))
                 .map(input => input.value);
