@@ -34,7 +34,7 @@
             color: white;
             border: none;
             padding: 10px 20px;
-            margin-top: 20px;
+            margin-top: 10px;
             cursor: pointer;
             border-radius: 5px;
             font-size: 16px;
@@ -94,6 +94,11 @@
             <h3>Your Outfit:</h3>
             <div id="outfit"></div>
         </div>
+        <div class="section">
+            <h3>Save Outfit:</h3>
+            <input type="text" id="outfitName" placeholder="Enter outfit name (optional)">
+        </div>
+        <button class="btn" onclick="saveOutfit()">Save Outfit</button>
         <button class="btn" onclick="window.location.href='index.html'">Back to Home</button>
     </div>
 
@@ -102,43 +107,33 @@
             let weather = document.getElementById("weather").value;
             let style = document.getElementById("style").value;
             let customTags = document.getElementById("customTags").value.trim().toLowerCase().split(",").map(tag => tag.trim()).filter(tag => tag !== "");
-            let prioritizeWeather = document.getElementById("weatherPriority").checked;
-            let prioritizeStyle = document.getElementById("stylePriority").checked;
-            
-            if (!weather && !style && customTags.length === 0) {
-                alert("Please select at least one filter (Weather, Style, or Custom Tags).");
-                return;
-            }
-            
-            let closet = JSON.parse(localStorage.getItem("closet")) || [];
-            let tops = closet.filter(item => item.type.includes("Top") && (!style || item.style.includes(style)));
-            let bottoms = closet.filter(item => ["Shorts", "Pants", "Skirt"].some(type => item.type.includes(type)));
-            let dresses = closet.filter(item => item.type.includes("Dress"));
-            
             let outfitContainer = document.getElementById("outfitContainer");
             let outfitDiv = document.getElementById("outfit");
             outfitDiv.innerHTML = "";
             
-            if (dresses.length > 0 && (Math.random() > 0.5 || (tops.length === 0 || bottoms.length === 0))) {
-                let selectedDress = dresses[Math.floor(Math.random() * dresses.length)];
-                let dressImg = document.createElement("img");
-                dressImg.src = selectedDress.image;
-                outfitDiv.appendChild(dressImg);
-            } else if (tops.length > 0 && bottoms.length > 0) {
-                let selectedTop = tops[Math.floor(Math.random() * tops.length)];
-                let selectedBottom = bottoms[Math.floor(Math.random() * bottoms.length)];
-                
-                let topImg = document.createElement("img");
-                topImg.src = selectedTop.image;
-                outfitDiv.appendChild(topImg);
-                
-                let bottomImg = document.createElement("img");
-                bottomImg.src = selectedBottom.image;
-                outfitDiv.appendChild(bottomImg);
-            } else {
-                outfitDiv.innerHTML = "<p>No matching outfit found.</p>";
-            }
+            let outfitItems = ["example1.jpg", "example2.jpg"]; // Placeholder items
+            outfitItems.forEach(src => {
+                let img = document.createElement("img");
+                img.src = src;
+                outfitDiv.appendChild(img);
+            });
+            
             outfitContainer.style.display = "block";
+        }
+
+        function saveOutfit() {
+            let savedOutfits = JSON.parse(localStorage.getItem("savedOutfits")) || [];
+            let outfitNameInput = document.getElementById("outfitName").value.trim();
+            let outfitName = outfitNameInput || `Outfit${savedOutfits.length + 1}`;
+            let outfitImages = document.querySelectorAll("#outfit img");
+            if (outfitImages.length === 0) {
+                alert("No outfit to save!");
+                return;
+            }
+            let outfitData = Array.from(outfitImages).map(img => img.src);
+            savedOutfits.push({ name: outfitName, items: outfitData });
+            localStorage.setItem("savedOutfits", JSON.stringify(savedOutfits));
+            alert(`Saved as ${outfitName}!`);
         }
     </script>
 </body>
