@@ -76,8 +76,6 @@
         <button class="btn" onclick="goToCloset()">Go to Closet</button>
         <button class="btn" onclick="goToAddPiece()">Add Piece</button>
         <button class="highlight-btn" onclick="goToGetOutfit()">Get Your Outfit Today</button>
-        <button class="btn" onclick="showLogin()">Login</button>
-        <button class="btn" onclick="showSignup()">Sign Up</button>
     </div>
 
     <!-- Login Form -->
@@ -99,6 +97,13 @@
     </div>
 
     <script>
+        // Check if the user is already logged in by checking if a token exists in localStorage
+        if (localStorage.getItem('token')) {
+            document.getElementById('mainPage').style.display = 'block';
+        } else {
+            document.getElementById('loginForm').style.display = 'block';
+        }
+
         function goToCloset() {
             window.location.href = 'closet.html';
         }
@@ -169,4 +174,3 @@
     </script>
 </body>
 </html>
-
