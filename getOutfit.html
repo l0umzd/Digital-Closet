@@ -104,22 +104,53 @@
 
     <script>
         function generateOutfit() {
-            let weather = document.getElementById("weather").value;
-            let style = document.getElementById("style").value;
-            let customTags = document.getElementById("customTags").value.trim().toLowerCase().split(",").map(tag => tag.trim()).filter(tag => tag !== "");
-            let outfitContainer = document.getElementById("outfitContainer");
-            let outfitDiv = document.getElementById("outfit");
-            outfitDiv.innerHTML = "";
-            
-            let outfitItems = ["example1.jpg", "example2.jpg"]; // Placeholder items
-            outfitItems.forEach(src => {
-                let img = document.createElement("img");
-                img.src = src;
-                outfitDiv.appendChild(img);
-            });
-            
-            outfitContainer.style.display = "block";
-        }
+    let weather = document.getElementById("weather").value;
+    let style = document.getElementById("style").value;
+    let customTags = document.getElementById("customTags").value.trim().toLowerCase().split(",").map(tag => tag.trim()).filter(tag => tag !== "");
+    let outfitContainer = document.getElementById("outfitContainer");
+    let outfitDiv = document.getElementById("outfit");
+    outfitDiv.innerHTML = "";
+
+    let closet = JSON.parse(localStorage.getItem("closet")) || [];
+
+    // Filter closet items by category
+    let tops = closet.filter(item => item.type.includes("Top"));
+    let bottoms = closet.filter(item => item.type.includes("Pants") || item.type.includes("Shorts") || item.type.includes("Skirt"));
+    let shoes = closet.filter(item => item.type.includes("Shoes"));
+
+    // Filter by weather and style if needed
+    if (weather) {
+        tops = tops.filter(item => item.weather.includes(weather));
+        bottoms = bottoms.filter(item => item.weather.includes(weather));
+        shoes = shoes.filter(item => item.weather.includes(weather));
+    }
+    if (style) {
+        tops = tops.filter(item => item.style.includes(style));
+        bottoms = bottoms.filter(item => item.style.includes(style));
+        shoes = shoes.filter(item => item.style.includes(style));
+    }
+    if (customTags.length > 0) {
+        tops = tops.filter(item => customTags.every(tag => item.tags.includes(tag)));
+        bottoms = bottoms.filter(item => customTags.every(tag => item.tags.includes(tag)));
+        shoes = shoes.filter(item => customTags.every(tag => item.tags.includes(tag)));
+    }
+
+    // Randomly pick one item from each category
+    let outfitItems = [];
+    if (tops.length > 0) outfitItems.push(tops[Math.floor(Math.random() * tops.length)]);
+    if (bottoms.length > 0) outfitItems.push(bottoms[Math.floor(Math.random() * bottoms.length)]);
+    if (shoes.length > 0) outfitItems.push(shoes[Math.floor(Math.random() * shoes.length)]);
+
+    // Display the outfit
+    outfitItems.forEach(item => {
+        let img = document.createElement("img");
+        img.src = item.image;
+        outfitDiv.appendChild(img);
+    });
+
+    outfitContainer.style.display = "block";
+}
+
 
         function saveOutfit() {
             let savedOutfits = JSON.parse(localStorage.getItem("savedOutfits")) || [];
